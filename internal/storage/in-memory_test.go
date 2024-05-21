@@ -1,11 +1,12 @@
 package storage
 
 import (
+	"client-server-db/internal/storage/memory"
 	"testing"
 )
 
 func TestNewMemoryStorage(t *testing.T) {
-	storage := NewMemoryStorage()
+	storage := memory.NewMemoryStorage()
 	if storage == nil {
 		t.Error("NewMemoryStorage returned nil")
 	}
@@ -15,7 +16,7 @@ func TestNewMemoryStorage(t *testing.T) {
 }
 
 func TestSetAndGet(t *testing.T) {
-	storage := NewMemoryStorage()
+	storage := memory.NewMemoryStorage()
 	key := "testKey"
 	value := "testValue"
 
@@ -30,7 +31,7 @@ func TestSetAndGet(t *testing.T) {
 }
 
 func TestDelete(t *testing.T) {
-	storage := NewMemoryStorage()
+	storage := memory.NewMemoryStorage()
 	key := "testKey"
 	value := "testValue"
 
@@ -44,7 +45,7 @@ func TestDelete(t *testing.T) {
 }
 
 func TestGetNonExistentKey(t *testing.T) {
-	storage := NewMemoryStorage()
+	storage := memory.NewMemoryStorage()
 	key := "nonExistentKey"
 
 	_, exists := storage.Get(key)

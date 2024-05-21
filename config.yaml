@@ -1,7 +1,7 @@
 engine:
-  type: "in_memory"
+  type: "memory"
 network:
-  address: "127.0.0.1:6767"
+  address: "127.0.0.1:5555"
   max_connections: 100
 logging:
   level: "info"
