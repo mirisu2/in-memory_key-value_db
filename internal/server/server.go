@@ -51,21 +51,7 @@ func (s *Server) handleRequest(conn net.Conn) {
 	scanner := bufio.NewScanner(conn)
 	for scanner.Scan() {
 		req := scanner.Text()
-		response := s.handlerMessages(req)
+		response := compute.HandlerMessages(req, s.storage)
 		conn.Write([]byte(response + "\n"))
 	}
-}
-
-func (s *Server) handlerMessages(req string) string {
-	command, args, err := compute.Parse(req)
-	if err != nil {
-		return err.Error()
-	}
-
-	query, err := compute.Analyze(command, args, s.storage)
-	if err != nil {
-		return err.Error()
-	}
-
-	return query
 }
