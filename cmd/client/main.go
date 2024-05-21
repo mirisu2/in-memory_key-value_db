@@ -1,38 +1,18 @@
 package main
 
 import (
-	"bufio"
-	"fmt"
-	"net"
+	"client-server-db/internal/client"
+	"client-server-db/internal/logger"
 	"os"
 )
 
 func main() {
+
 	// TODO Use environment variables or config args
-	serverAddress := "localhost:5555"
-
-	conn, err := net.Dial("tcp", serverAddress)
+	cl, err := client.NewClient("localhost:5555", logger.Log)
 	if err != nil {
-		fmt.Println("Error connecting:", err.Error())
-		return
+		logger.Log.Error(err.Error())
+		os.Exit(1)
 	}
-	defer conn.Close()
-
-	fmt.Println("Connected to server at", serverAddress)
-
-	scanner := bufio.NewScanner(os.Stdin)
-	for {
-		fmt.Print("> ")
-		scanner.Scan()
-		text := scanner.Text()
-
-		if text == "exit" {
-			break
-		}
-
-		fmt.Fprintf(conn, text+"\n")
-
-		message, _ := bufio.NewReader(conn).ReadString('\n')
-		fmt.Print(message)
-	}
+	cl.Run()
 }

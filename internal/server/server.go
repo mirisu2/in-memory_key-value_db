@@ -40,6 +40,7 @@ func (s *Server) Run() {
 			logger.Log.Error(err.Error())
 			continue
 		}
+		logger.Log.Info(fmt.Sprintf("new connection from %s", conn.RemoteAddr().String()))
 		go s.handleRequest(conn)
 	}
 }
