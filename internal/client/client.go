@@ -9,28 +9,26 @@ import (
 )
 
 type Client struct {
-	port   string
-	logger *slog.Logger
+	address string
+	logger  *slog.Logger
 }
 
-func NewClient(port string, logger *slog.Logger) (*Client, error) {
+func NewClient(address string, logger *slog.Logger) (*Client, error) {
 	return &Client{
-		port:   port,
-		logger: logger,
+		address: address,
+		logger:  logger,
 	}, nil
 }
 
 func (s *Client) Run() {
-	clientAddress := "localhost:5555"
-
-	conn, err := net.Dial("tcp", clientAddress)
+	conn, err := net.Dial("tcp", s.address)
 	if err != nil {
 		fmt.Println("Error connecting:", err.Error())
 		return
 	}
 	defer conn.Close()
 
-	fmt.Println("Connected to server at", clientAddress)
+	fmt.Println("Connected to server at", s.address)
 
 	scanner := bufio.NewScanner(os.Stdin)
 	for {

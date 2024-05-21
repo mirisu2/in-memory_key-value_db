@@ -3,6 +3,7 @@ package server
 import (
 	"bufio"
 	"client-server-db/internal/compute"
+	"client-server-db/internal/config"
 	"client-server-db/internal/logger"
 	"client-server-db/internal/storage"
 	"fmt"
@@ -11,28 +12,30 @@ import (
 )
 
 type Server struct {
-	port    string
-	storage storage.Storage
-	logger  *slog.Logger
+	address        string
+	maxConnections int
+	storage        storage.Storage
+	logger         *slog.Logger
 }
 
-func NewServer(port string, storage storage.Storage, logger *slog.Logger) (*Server, error) {
+func NewServer(cfg *config.Config, storage storage.Storage, logger *slog.Logger) (*Server, error) {
 	return &Server{
-		port:    port,
-		storage: storage,
-		logger:  logger,
+		address:        cfg.Network.Address,
+		maxConnections: cfg.Network.MaxConnections,
+		storage:        storage,
+		logger:         logger,
 	}, nil
 }
 
 func (s *Server) Run() {
-	listener, err := net.Listen("tcp", ":"+s.port)
+	listener, err := net.Listen("tcp", s.address)
 	if err != nil {
 		logger.Log.Error(err.Error())
 		return
 	}
 	defer listener.Close()
 
-	logger.Log.Info(fmt.Sprintf("listening on port %s", s.port))
+	logger.Log.Info(fmt.Sprintf("listening on address %s", s.address))
 
 	for {
 		conn, err := listener.Accept()

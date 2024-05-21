@@ -3,13 +3,15 @@ package main
 import (
 	"client-server-db/internal/client"
 	"client-server-db/internal/logger"
+	"flag"
 	"os"
 )
 
 func main() {
+	address := flag.String("address", "localhost:5555", "server address")
+	flag.Parse()
 
-	// TODO Use environment variables or config args
-	cl, err := client.NewClient("localhost:5555", logger.Log)
+	cl, err := client.NewClient(*address, logger.Log)
 	if err != nil {
 		logger.Log.Error(err.Error())
 		os.Exit(1)
