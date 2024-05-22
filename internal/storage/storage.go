@@ -3,6 +3,7 @@ package storage
 import (
 	"errors"
 	"fmt"
+	"log/slog"
 )
 
 type Storage interface {
@@ -11,10 +12,10 @@ type Storage interface {
 	Delete(key string)
 }
 
-func NewStorage(storageType string) (Storage, error) {
+func NewStorage(storageType string, logg *slog.Logger) (Storage, error) {
 	switch storageType {
 	case "memory":
-		return NewMemoryStorage(), nil
+		return NewMemoryStorage(logg), nil
 	default:
 		return nil, errors.New(fmt.Sprintf("unknown storage type: %s", storageType))
 	}

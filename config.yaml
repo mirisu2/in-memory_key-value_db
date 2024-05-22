@@ -1,8 +1,11 @@
 engine:
   type: "memory"
 network:
-  address: "127.0.0.1:5555"
+  address: "127.0.0.1:6767"
   max_connections: 100
 logging:
   level: "info"
-  output: "/log/output.log"
+  log_file_name: "server.log"
+  output: "file"
+  format: "json"
+  source: "true"

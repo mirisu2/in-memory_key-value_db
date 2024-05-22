@@ -2,8 +2,8 @@ package main
 
 import (
 	"client-server-db/internal/client"
-	"client-server-db/internal/logger"
 	"flag"
+	"fmt"
 	"os"
 )
 
@@ -11,9 +11,9 @@ func main() {
 	address := flag.String("address", "localhost:5555", "server address")
 	flag.Parse()
 
-	cl, err := client.NewClient(*address, logger.Log)
+	cl, err := client.NewClient(*address)
 	if err != nil {
-		logger.Log.Error(err.Error())
+		fmt.Println(err.Error())
 		os.Exit(1)
 	}
 	cl.Run()

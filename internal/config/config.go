@@ -14,11 +14,18 @@ type Config struct {
 		MaxConnections int    `yaml:"max_connections"`
 	} `yaml:"network"`
 	Logging struct {
-		Level  string `yaml:"level"`
-		Format string `yaml:"format"`
-		Output string `yaml:"output"`
+		Level       string `yaml:"level"`
+		Format      string `yaml:"format"`
+		LogFileName string `yaml:"log_file_name"`
+		Output      string `yaml:"output"`
+		Source      string `yaml:"source"`
 	} `yaml:"logging"`
 }
+
+//level: "info" #debug, warn, error, default:info
+//output: "output.log"
+//type: "file" #console or file
+//format: "json" #json or text
 
 func NewConfig(filePath string) (*Config, error) {
 	data, err := os.ReadFile(filePath)

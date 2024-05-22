@@ -16,27 +16,25 @@ func main() {
 
 	cfg, err := config.NewConfig(*file)
 	if err != nil {
-		logger.Log.Error(err.Error())
+		fmt.Println(err.Error())
 		os.Exit(1)
 	}
 
-	logger.Log.Info(fmt.Sprintf("Engine.Type: %s", cfg.Engine.Type))
-	store, err := storage.NewStorage(cfg.Engine.Type)
+	logg, err := logger.NewLogger(cfg)
 	if err != nil {
-		logger.Log.Error(err.Error())
+		fmt.Println(err.Error())
+	}
+
+	logg.Info(fmt.Sprintf("Engine.Type: %s", cfg.Engine.Type))
+	store, err := storage.NewStorage(cfg.Engine.Type, logg)
+	if err != nil {
+		logg.Error(err.Error())
 		os.Exit(1)
 	}
 
-	//logger, err := logger.NewLogger(cfg.Logging.Level, cfg.Logging.Format, cfg.Logging.Output)
-	//if err != nil {
-	//	fmt.Println(err.Error())
-	//	os.Exit(1)
-	//}
-
-	srv, err := server.NewServer(cfg, store, logger.Log)
+	srv, err := server.NewServer(cfg, store, logg)
 	if err != nil {
-		logger.Log.Error(err.Error())
-		//logger.Log.Error(err.Error())
+		logg.Error(err.Error())
 		os.Exit(1)
 	}
 	srv.Run()

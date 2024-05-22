@@ -13,10 +13,9 @@ type Client struct {
 	logger  *slog.Logger
 }
 
-func NewClient(address string, logger *slog.Logger) (*Client, error) {
+func NewClient(address string) (*Client, error) {
 	return &Client{
 		address: address,
-		logger:  logger,
 	}, nil
 }
 
