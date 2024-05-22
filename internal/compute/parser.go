@@ -13,23 +13,27 @@ var (
 		"DELETE": true,
 	}
 	allowedChars = `^[a-zA-Z0-9_*/.-]+$`
+
+	ErrNotEnoughArguments = errors.New("not enough arguments")
+	ErrInvalidCommand     = errors.New("invalid command")
+	ErrInvalidCharacters  = errors.New("invalid characters")
 )
 
 func Parse(request string) (command string, args []string, err error) {
 	parts := strings.Fields(request)
 	if len(parts) < 2 {
-		return "", nil, errors.New("not enough arguments")
+		return "", nil, ErrNotEnoughArguments
 	}
 
 	command = parts[0]
 	if _, ok := validCommands[command]; !ok {
-		return "", nil, errors.New("invalid command")
+		return "", nil, ErrInvalidCommand
 	}
 
 	argPattern := regexp.MustCompile(allowedChars)
 	for _, arg := range parts[1:] {
 		if !argPattern.MatchString(arg) {
-			return "", nil, errors.New("invalid characters in arguments")
+			return "", nil, ErrInvalidCharacters
 		}
 		args = append(args, arg)
 	}

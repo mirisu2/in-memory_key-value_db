@@ -1,8 +1,8 @@
 engine:
   type: "memory"
 network:
-  address: "127.0.0.1:6767"
-  max_connections: 100
+  address: "0.0.0.0:6767"
+  max_connections: 2
 logging:
   level: "info"
   log_file_name: "server.log"

@@ -42,6 +42,13 @@ func (s *Client) Run() {
 		fmt.Fprintf(conn, text+"\n")
 
 		message, _ := bufio.NewReader(conn).ReadString('\n')
+
+		if message == "maximum connections reached" {
+			fmt.Println("Server response:", message)
+			fmt.Println("Closing connection due to maximum connections reached")
+			break
+		}
+
 		fmt.Print(message)
 	}
 }

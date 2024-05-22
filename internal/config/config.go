@@ -22,11 +22,6 @@ type Config struct {
 	} `yaml:"logging"`
 }
 
-//level: "info" #debug, warn, error, default:info
-//output: "output.log"
-//type: "file" #console or file
-//format: "json" #json or text
-
 func NewConfig(filePath string) (*Config, error) {
 	data, err := os.ReadFile(filePath)
 	if err != nil {

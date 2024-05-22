@@ -5,16 +5,24 @@ import (
 	"client-server-db/internal/compute"
 	"client-server-db/internal/config"
 	"client-server-db/internal/storage"
+	"errors"
 	"fmt"
 	"log/slog"
 	"net"
+	"sync"
+)
+
+var (
+	ErrMaxConnectionsReached = errors.New("maximum connections reached")
 )
 
 type Server struct {
 	address        string
-	maxConnections int
 	storage        storage.Storage
 	logger         *slog.Logger
+	maxConnections int
+	connCount      int
+	connMutex      sync.Mutex
 }
 
 func NewServer(cfg *config.Config, storage storage.Storage, logg *slog.Logger) (*Server, error) {
@@ -49,13 +57,31 @@ func (s *Server) Run() {
 			s.logger.Error(err.Error())
 			continue
 		}
+
+		s.connMutex.Lock()
+		if s.connCount >= s.maxConnections {
+			s.connMutex.Unlock()
+			conn.Write([]byte(ErrMaxConnectionsReached.Error()))
+			conn.Close()
+			s.logger.Warn(ErrMaxConnectionsReached.Error())
+			continue
+		}
+		s.connCount++
+		s.connMutex.Unlock()
+
 		s.logger.Info(fmt.Sprintf("new connection from %s", conn.RemoteAddr().String()))
 		go s.handleRequest(conn)
 	}
 }
 
 func (s *Server) handleRequest(conn net.Conn) {
-	defer conn.Close()
+	defer func() {
+		s.logger.Info(fmt.Sprintf("connection from %s closed", conn.RemoteAddr().String()))
+		conn.Close()
+		s.connMutex.Lock()
+		s.connCount--
+		s.connMutex.Unlock()
+	}()
 
 	scanner := bufio.NewScanner(conn)
 	for scanner.Scan() {
